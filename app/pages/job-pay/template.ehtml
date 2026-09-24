@@ -1,0 +1,72 @@
+import "./style.css";
+import { redirect } from "@elements/app";
+import { Job } from "#app/shared/services/jobs";
+import { AppShell } from "#app/shared/templates/app-shell";
+import { money, when } from "#app/shared/format";
+import { simulatePayment } from "./services";
+
+function onPay(job: Job, state: { busy: boolean; error: string }) {
+  state.busy = true;
+
+  try {
+    simulatePayment(job.id);
+    redirect(`/jobs/${job.id}?paid=1`);
+  } catch (err: any) {
+    state.error = err.message;
+    state.busy = false;
+  }
+}
+
+<html lang="en" class="page-job-pay" (
+  job: Job,
+  private state: { busy: boolean; error: string } = { busy: false, error: "" },
+)>
+  <head>
+    <title>Pay invoice · Greenline Lawn Care</title>
+    <meta name="description" content="Pay your lawn care invoice.">
+  </head>
+  <body>
+    <AppShell active="jobs">
+      <div class="page-shell is-form stack is-lg">
+        <a class="job-back" href={`/jobs/${job.id}`}>← Back to the job</a>
+
+        <div class="page-head row">
+          <div>
+            <h1>Pay invoice</h1>
+            <p class="lede">{job.serviceName} · {when(job.scheduledAt)}</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body stack">
+            <dl class="pay-lines">
+              <dt>Service</dt>
+              <dd>{job.serviceName}</dd>
+              <dt>Address</dt>
+              <dd>{job.address}</dd>
+            </dl>
+            <div class="divider is-soft"></div>
+            <div class="pay-total row">
+              <span>Amount due</span>
+              <strong>{money(job.amountCents)}</strong>
+            </div>
+          </div>
+          <div class="card-foot">
+            <button class="is-primary" disabled={state.busy} onclick={() => onPay(job, state)}>
+              {state.busy ? "Paying..." : `Simulate ${money(job.amountCents)} card payment`}
+            </button>
+          </div>
+        </div>
+
+        <div class="callout is-info">
+          <div class="callout-title">Development mode</div>
+          Stripe keys aren't set, so this stands in for Stripe Checkout. Add
+          <code>STRIPE_SECRET_KEY</code> to <code>config/env/development.env</code> and this
+          button becomes a real card checkout.
+        </div>
+
+        <p class="error" e:if={state.error}>{state.error}</p>
+      </div>
+    </AppShell>
+  </body>
+</html>

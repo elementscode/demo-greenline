@@ -1,0 +1,120 @@
+import "./style.css";
+import { redirect } from "@elements/app";
+import { signup, SignupForm, MIN_PASSWORD } from "#app/shared/services/auth";
+
+type Errors = Partial<Record<keyof SignupForm, string[]>>;
+
+interface State {
+  form: SignupForm;
+  errors: Errors;
+  error: string;
+}
+
+function onSubmit(state: State) {
+  try {
+    let home = signup(state.form);
+    state.errors = {};
+    state.error = "";
+    redirect(home);
+  } catch (err: any) {
+    state.errors = err.errors ?? {};
+    state.error = err.errors ? "" : err.message;
+  }
+}
+
+<html lang="en" class="page-signup" (
+  private state: State = {
+    form: { name: "", email: "", address: "", password: "" },
+    errors: {},
+    error: "",
+  },
+)>
+  <head>
+    <title>Create an account · Greenline Lawn Care</title>
+    <meta name="description" content="Create a customer account to book lawn care.">
+  </head>
+  <body>
+    <main class="auth">
+      <div class="auth-panel stack is-lg">
+        <a class="auth-brand row" href="/">
+          <span class="auth-mark">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 20c0-8 5-14 15-15-1 10-7 15-15 15z"/>
+              <path d="M5 20l7-7"/>
+            </svg>
+          </span>
+          Greenline Lawn Care
+        </a>
+
+        <div class="card auth-card">
+          <div class="card-body">
+            <form class="stack" onsubmit={() => onSubmit(state)}>
+              <div class="stack is-xs">
+                <h1>Create an account</h1>
+                <p class="hint">Book mowing, leaf cleanup and hedge trimming online.</p>
+              </div>
+
+              <p e:if={state.error} class="error" role="alert">{state.error}</p>
+
+              <div class="field">
+                <label for="name">Full name</label>
+                <input id="name"
+                       name="name"
+                       value={state.form.name}
+                       autocomplete="name"
+                       class={[state.errors.name && "is-error"]}
+                       required>
+                <p e:if={state.errors.name} class="error">{state.errors.name?.[0]}</p>
+              </div>
+
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email"
+                       name="email"
+                       type="email"
+                       value={state.form.email}
+                       autocomplete="email"
+                       autocapitalize="none"
+                       spellcheck={false}
+                       placeholder="you@example.com"
+                       class={[state.errors.email && "is-error"]}
+                       required>
+                <p e:if={state.errors.email} class="error">{state.errors.email?.[0]}</p>
+              </div>
+
+              <div class="field">
+                <label for="address">Service address</label>
+                <input id="address"
+                       name="address"
+                       value={state.form.address}
+                       autocomplete="street-address"
+                       placeholder="123 Main Street, Springfield"
+                       class={[state.errors.address && "is-error"]}
+                       required>
+                <p e:if={state.errors.address} class="error">{state.errors.address?.[0]}</p>
+              </div>
+
+              <div class="field">
+                <label for="password">Password</label>
+                <input id="password"
+                       name="password"
+                       type="password"
+                       value={state.form.password}
+                       autocomplete="new-password"
+                       minlength={MIN_PASSWORD}
+                       class={[state.errors.password && "is-error"]}
+                       required>
+                <p e:if={state.errors.password} class="error">{state.errors.password?.[0]}</p>
+                <p e:else class="hint">At least {MIN_PASSWORD} characters.</p>
+              </div>
+
+              <button type="submit" class="is-primary is-block">Create account</button>
+            </form>
+          </div>
+        </div>
+
+        <p class="auth-switch">Already have an account? <a href="/signin">Sign in</a></p>
+      </div>
+    </main>
+  </body>
+</html>

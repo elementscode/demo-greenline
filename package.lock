@@ -1,0 +1,370 @@
+[
+  {
+    "edges": [
+      {
+        "spec": "@elements/app@latest",
+        "uri": "https://packages.elements.dev/@elements/app/-/app-0.10.0.tgz"
+      },
+      {
+        "spec": "@elements/style@latest",
+        "uri": "https://packages.elements.dev/@elements/style/-/style-0.10.0.tgz"
+      },
+      {
+        "spec": "@types/node@latest",
+        "uri": "https://registry.npmjs.org/@types/node/-/node-26.6.2.tgz"
+      },
+      {
+        "kind": "peerDependency",
+        "isAutoPeer": true,
+        "spec": "pg@>=8.0.0",
+        "uri": "https://registry.npmjs.org/pg/-/pg-8.23.0.tgz"
+      },
+      {
+        "spec": "stripe@^22.6.2",
+        "uri": "https://registry.npmjs.org/stripe/-/stripe-22.6.2.tgz"
+      },
+      {
+        "spec": "tslib@latest",
+        "uri": "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://packages.elements.dev/@elements/app/-/app-0.10.0.tgz",
+    "name": "@elements/app",
+    "version": "0.10.0",
+    "integrity": "sha256-3HhvMHFNI03M3T6NtmgzMcqLMnUgTcTaCJNjjUchi/M=",
+    "edges": [
+      {
+        "spec": "nodemailer@^9.0.5",
+        "uri": "https://registry.npmjs.org/nodemailer/-/nodemailer-9.1.1.tgz"
+      },
+      {
+        "spec": "pg@^8.23.0",
+        "uri": "https://registry.npmjs.org/pg/-/pg-8.23.0.tgz"
+      },
+      {
+        "spec": "ws@^8.21.3",
+        "uri": "https://registry.npmjs.org/ws/-/ws-8.21.3.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://packages.elements.dev/@elements/style/-/style-0.10.0.tgz",
+    "name": "@elements/style",
+    "version": "0.10.0",
+    "integrity": "sha256-EDmHe7qqgSzT3hc7ZDY/BdVdPPhkbY6xhz9VKjWVFVI="
+  },
+  {
+    "uri": "https://registry.npmjs.org/@types/node/-/node-26.6.2.tgz",
+    "name": "@types/node",
+    "version": "26.6.2",
+    "integrity": "sha512-X1P21scMv4zGKLYqjdGjaKa7COa0RKVYYZZN/NfvLQ1JegxFhdhpZG/Lyn8AXx6CDUavKAd11v6BvfpkDByK8g==",
+    "edges": [
+      {
+        "spec": "undici-types@~8.9.0",
+        "uri": "https://registry.npmjs.org/undici-types/-/undici-types-8.9.0.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/bindings/-/bindings-1.5.0.tgz",
+    "name": "bindings",
+    "version": "1.5.0",
+    "integrity": "sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==",
+    "edges": [
+      {
+        "spec": "file-uri-to-path@1.0.0",
+        "uri": "https://registry.npmjs.org/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/bufferutil/-/bufferutil-4.1.0.tgz",
+    "name": "bufferutil",
+    "version": "4.1.0",
+    "integrity": "sha512-ZMANVnAixE6AWWnPzlW2KpUrxhm9woycYvPOo67jWHyFowASTEd9s+QN1EIMsSDtwhIxN4sWE1jotpuDUIgyIw==",
+    "edges": [
+      {
+        "spec": "node-gyp-build@^4.3.0",
+        "uri": "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.8.4.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz",
+    "name": "file-uri-to-path",
+    "version": "1.0.0",
+    "integrity": "sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/libpq/-/libpq-1.11.0.tgz",
+    "name": "libpq",
+    "version": "1.11.0",
+    "integrity": "sha512-mHoPlvMwYDMJV36bS2w3eSdFD4eDSm7P9FsvruUldQxzE23/W6qitT9VU/yD1+g2vpgpDktnk2iEYJyhy1RR5g==",
+    "edges": [
+      {
+        "spec": "bindings@1.5.0",
+        "uri": "https://registry.npmjs.org/bindings/-/bindings-1.5.0.tgz"
+      },
+      {
+        "spec": "nan@~2.26.2",
+        "uri": "https://registry.npmjs.org/nan/-/nan-2.26.2.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/nan/-/nan-2.26.2.tgz",
+    "name": "nan",
+    "version": "2.26.2",
+    "integrity": "sha512-0tTvBTYkt3tdGw22nrAy50x7gpbGCCFH3AFcyS5WiUu7Eu4vWlri1woE6qHBSfy11vksDqkiwjOnlR7WV8G1Hw=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.8.4.tgz",
+    "name": "node-gyp-build",
+    "version": "4.8.4",
+    "bin": {
+      "node-gyp-build": "bin.js",
+      "node-gyp-build-optional": "optional.js",
+      "node-gyp-build-test": "build-test.js"
+    },
+    "integrity": "sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/nodemailer/-/nodemailer-9.1.1.tgz",
+    "name": "nodemailer",
+    "version": "9.1.1",
+    "integrity": "sha512-izw9mVKFix6YSnC9eLgV6g1opl9DUlRio9ZNcq+Wu9Ujn2UwF+8Nl0B8nz22kEC+CTZCvinkxwJ0DeFbb6NwcQ=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/pg-cloudflare/-/pg-cloudflare-1.4.0.tgz",
+    "name": "pg-cloudflare",
+    "version": "1.4.0",
+    "integrity": "sha512-Vo7z/6rrQYxpNRylp4Tlob2elzbh+N/MOQbxFVWCxS7oEx6jF53GTJFxK2WWpKuBRkmiin4Mt+xofFDjx09R0A=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.14.0.tgz",
+    "name": "pg-connection-string",
+    "version": "2.14.0",
+    "integrity": "sha512-XwWDGcLRGCXAR8F/AM5bG7Q+A3Wm2s6QeEjlOKZLlH3UYcguiqCWKyWXVag5TLTIjR7oOJUY8kcADaZgWPyLeg=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz",
+    "name": "pg-int8",
+    "version": "1.0.1",
+    "integrity": "sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/pg-native/-/pg-native-3.9.0.tgz",
+    "name": "pg-native",
+    "version": "3.9.0",
+    "integrity": "sha512-Ft2bWjeioMQY4jylHKWPQujwJfqGikgSmdUtPU8E+UtRMHtOYDi7FP72LRDF0wpQFC3/QUk8K6cDPD3YEuOdAw==",
+    "edges": [
+      {
+        "spec": "libpq@^1.8.15",
+        "uri": "https://registry.npmjs.org/libpq/-/libpq-1.11.0.tgz"
+      },
+      {
+        "spec": "pg-types@2.2.0",
+        "uri": "https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/pg-pool/-/pg-pool-3.14.0.tgz",
+    "name": "pg-pool",
+    "version": "3.14.0",
+    "integrity": "sha512-gKtPkFdQPU3DksooVLi9LsjZxrsBUZIpa+7aVx+LV5pNh0KzP4Zleud2po+ConrxbuXGBJ6Hfer6hdgpIBpBaw==",
+    "edges": [
+      {
+        "kind": "peerDependency",
+        "spec": "pg@>=8.0",
+        "uri": "https://registry.npmjs.org/pg/-/pg-8.23.0.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.16.0.tgz",
+    "name": "pg-protocol",
+    "version": "1.16.0",
+    "integrity": "sha512-sILXutLVjCLjcDuOmvhX5e2Z4cS5qG/6Bu3VkpFwdf/633ElGLpEh9bgmuI5I4sqKqkifQiGyiCcx1HdtrK7tg=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz",
+    "name": "pg-types",
+    "version": "2.2.0",
+    "integrity": "sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==",
+    "edges": [
+      {
+        "spec": "pg-int8@1.0.1",
+        "uri": "https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz"
+      },
+      {
+        "spec": "postgres-array@~2.0.0",
+        "uri": "https://registry.npmjs.org/postgres-array/-/postgres-array-2.0.0.tgz"
+      },
+      {
+        "spec": "postgres-bytea@~1.0.0",
+        "uri": "https://registry.npmjs.org/postgres-bytea/-/postgres-bytea-1.0.1.tgz"
+      },
+      {
+        "spec": "postgres-date@~1.0.4",
+        "uri": "https://registry.npmjs.org/postgres-date/-/postgres-date-1.0.7.tgz"
+      },
+      {
+        "spec": "postgres-interval@^1.1.0",
+        "uri": "https://registry.npmjs.org/postgres-interval/-/postgres-interval-1.2.0.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/pg/-/pg-8.23.0.tgz",
+    "name": "pg",
+    "version": "8.23.0",
+    "integrity": "sha512-Ip2EQCngowJLGOfCwkFhPXU7/ljlhn6Rxlmy4XYfL2Y+vyRM59+8uR2xqRWKdYmbXmxCFOAmKxBuSUCdF34qLg==",
+    "edges": [
+      {
+        "spec": "pg-cloudflare@^1.4.0",
+        "uri": "https://registry.npmjs.org/pg-cloudflare/-/pg-cloudflare-1.4.0.tgz"
+      },
+      {
+        "spec": "pg-connection-string@^2.14.0",
+        "uri": "https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.14.0.tgz"
+      },
+      {
+        "kind": "peerDependency",
+        "optional": true,
+        "spec": "pg-native@>=3.0.1",
+        "uri": "https://registry.npmjs.org/pg-native/-/pg-native-3.9.0.tgz"
+      },
+      {
+        "spec": "pg-pool@^3.14.0",
+        "uri": "https://registry.npmjs.org/pg-pool/-/pg-pool-3.14.0.tgz"
+      },
+      {
+        "spec": "pg-protocol@^1.16.0",
+        "uri": "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.16.0.tgz"
+      },
+      {
+        "spec": "pg-types@2.2.0",
+        "uri": "https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz"
+      },
+      {
+        "spec": "pgpass@1.0.5",
+        "uri": "https://registry.npmjs.org/pgpass/-/pgpass-1.0.5.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/pgpass/-/pgpass-1.0.5.tgz",
+    "name": "pgpass",
+    "version": "1.0.5",
+    "integrity": "sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==",
+    "edges": [
+      {
+        "spec": "split2@^4.1.0",
+        "uri": "https://registry.npmjs.org/split2/-/split2-4.2.0.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/postgres-array/-/postgres-array-2.0.0.tgz",
+    "name": "postgres-array",
+    "version": "2.0.0",
+    "integrity": "sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/postgres-bytea/-/postgres-bytea-1.0.1.tgz",
+    "name": "postgres-bytea",
+    "version": "1.0.1",
+    "integrity": "sha512-5+5HqXnsZPE65IJZSMkZtURARZelel2oXUEO8rH83VS/hxH5vv1uHquPg5wZs8yMAfdv971IU+kcPUczi7NVBQ=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/postgres-date/-/postgres-date-1.0.7.tgz",
+    "name": "postgres-date",
+    "version": "1.0.7",
+    "integrity": "sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/postgres-interval/-/postgres-interval-1.2.0.tgz",
+    "name": "postgres-interval",
+    "version": "1.2.0",
+    "integrity": "sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==",
+    "edges": [
+      {
+        "spec": "xtend@^4.0.0",
+        "uri": "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/split2/-/split2-4.2.0.tgz",
+    "name": "split2",
+    "version": "4.2.0",
+    "integrity": "sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/stripe/-/stripe-22.6.2.tgz",
+    "name": "stripe",
+    "version": "22.6.2",
+    "integrity": "sha512-PwRE2scocvXqDKPiskMa5vRJEAEkq46W69XyUYmAwrNSLr675lQnfqLwnsndAWizwgihOWw/irLmoFRo3ez7ew==",
+    "edges": [
+      {
+        "kind": "peerDependency",
+        "optional": true,
+        "spec": "@types/node@>=18",
+        "uri": "https://registry.npmjs.org/@types/node/-/node-26.6.2.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz",
+    "name": "tslib",
+    "version": "2.8.1",
+    "integrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/undici-types/-/undici-types-8.9.0.tgz",
+    "name": "undici-types",
+    "version": "8.9.0",
+    "integrity": "sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg=="
+  },
+  {
+    "uri": "https://registry.npmjs.org/utf-8-validate/-/utf-8-validate-6.0.6.tgz",
+    "name": "utf-8-validate",
+    "version": "6.0.6",
+    "integrity": "sha512-q3l3P9UtEEiAHcsgsqTgf9PPjctrDWoIXW3NpOHFdRDbLvu4DLIcxHangJ4RLrWkBcKjmcs/6NkerI8T/rE4LA==",
+    "edges": [
+      {
+        "spec": "node-gyp-build@^4.3.0",
+        "uri": "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.8.4.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/ws/-/ws-8.21.3.tgz",
+    "name": "ws",
+    "version": "8.21.3",
+    "integrity": "sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==",
+    "edges": [
+      {
+        "kind": "peerDependency",
+        "optional": true,
+        "spec": "bufferutil@^4.0.1",
+        "uri": "https://registry.npmjs.org/bufferutil/-/bufferutil-4.1.0.tgz"
+      },
+      {
+        "kind": "peerDependency",
+        "optional": true,
+        "spec": "utf-8-validate@>=5.0.2",
+        "uri": "https://registry.npmjs.org/utf-8-validate/-/utf-8-validate-6.0.6.tgz"
+      }
+    ]
+  },
+  {
+    "uri": "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz",
+    "name": "xtend",
+    "version": "4.0.2",
+    "integrity": "sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ=="
+  }
+]

@@ -1,0 +1,30 @@
+import "./style.css";
+import { Job } from "#app/shared/services/jobs";
+import { money, statusLabel, statusPill, time } from "#app/shared/format";
+import config from "#config";
+
+const monthFormat = new Intl.DateTimeFormat("en-US", { timeZone: config.public.timeZone, month: "short" });
+const dayFormat = new Intl.DateTimeFormat("en-US", { timeZone: config.public.timeZone, day: "numeric" });
+const weekdayFormat = new Intl.DateTimeFormat("en-US", { timeZone: config.public.timeZone, weekday: "long" });
+
+<JobRow (job: Job, showCustomer: boolean)>
+  <a class="job-row" href={`/jobs/${job.id}`}>
+    <span class="job-row-date">
+      <span class="job-row-month">{monthFormat.format(job.scheduledAt)}</span>
+      <span class="job-row-day">{dayFormat.format(job.scheduledAt)}</span>
+      <span class="job-row-time">{time(job.scheduledAt)}</span>
+    </span>
+
+    <span class="job-row-main stack is-xs">
+      <span class="job-row-title" e:if={showCustomer}>{job.customerName} · {job.serviceName}</span>
+      <span class="job-row-title" e:else>{job.serviceName}</span>
+      <span class="job-row-meta" e:if={showCustomer}>{job.address}</span>
+      <span class="job-row-meta" e:else>{weekdayFormat.format(job.scheduledAt)} · {job.description || "No notes"}</span>
+    </span>
+
+    <span class="job-row-side">
+      <span class={statusPill(job.status)}><span class="pill-dot"></span>{statusLabel(job.status)}</span>
+      <span class="job-row-amount">{money(job.amountCents ?? job.priceCents)}</span>
+    </span>
+  </a>
+</JobRow>

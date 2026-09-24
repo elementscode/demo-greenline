@@ -1,0 +1,47 @@
+import "./style.css";
+
+/**
+ * Sent when a completed job is invoiced.
+ *
+ * @email
+ */
+<html (
+  customerName: string,
+  serviceName: string,
+  amount: string,
+  scheduled: string,
+  address: string,
+  payUrl: string,
+)>
+  <body class="email invoice-ready">
+    <div class="email-wrap">
+      <h1>Your invoice is ready</h1>
+      <p>Hi {customerName}, we've finished your {serviceName.toLowerCase()} job. Here's your invoice.</p>
+
+      <table class="summary" role="presentation">
+        <tr>
+          <td class="label">Service</td>
+          <td class="value">{serviceName}</td>
+        </tr>
+        <tr>
+          <td class="label">Scheduled</td>
+          <td class="value">{scheduled}</td>
+        </tr>
+        <tr>
+          <td class="label">Address</td>
+          <td class="value">{address}</td>
+        </tr>
+        <tr class="total">
+          <td class="label">Amount due</td>
+          <td class="value">{amount}</td>
+        </tr>
+      </table>
+
+      <p><a class="pay" href={payUrl}>Pay {amount} by card</a></p>
+
+      <div class="email-footer">
+        <p>Greenline Lawn Care · Thanks for your business.</p>
+      </div>
+    </div>
+  </body>
+</html>

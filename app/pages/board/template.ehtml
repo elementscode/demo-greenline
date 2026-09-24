@@ -1,0 +1,138 @@
+import "./style.css";
+import { LiveView } from "@elements/app";
+import { Job } from "#app/shared/services/jobs";
+import { AppShell } from "#app/shared/templates/app-shell";
+import { JobRow } from "#app/shared/templates/job-row";
+import { day, money } from "#app/shared/format";
+
+type Filter = "all" | "unpaid" | "paid";
+
+interface DayGroup {
+  id: string;
+  label: string;
+  jobs: Job[];
+}
+
+function scheduled(jobs: LiveView<Job>): Job[] {
+  return jobs.filter((j) => j.status === "scheduled").sort((a, b) => +a.scheduledAt - +b.scheduledAt);
+}
+
+function done(jobs: LiveView<Job>): Job[] {
+  return jobs.filter((j) => j.status !== "scheduled").sort((a, b) => +b.scheduledAt - +a.scheduledAt);
+}
+
+function isUnpaid(job: Job): boolean {
+  return job.status === "completed" || job.status === "invoiced";
+}
+
+function filtered(jobs: LiveView<Job>, filter: Filter): Job[] {
+  return done(jobs).filter((j) => filter === "all" || (filter === "paid" ? j.status === "paid" : isUnpaid(j)));
+}
+
+/** The queue reads as a schedule: one heading per work day. */
+function byDay(list: Job[]): DayGroup[] {
+  let groups: DayGroup[] = [];
+
+  for (let job of list) {
+    let label = day(job.scheduledAt);
+    let last = groups[groups.length - 1];
+
+    if (last && last.label === label) {
+      last.jobs.push(job);
+    } else {
+      groups.push({ id: label, label, jobs: [job] });
+    }
+  }
+
+  return groups;
+}
+
+function outstanding(jobs: LiveView<Job>): number {
+  return done(jobs).filter(isUnpaid).reduce((sum, j) => sum + (j.amountCents ?? j.priceCents), 0);
+}
+
+function collected(jobs: LiveView<Job>): number {
+  return done(jobs).filter((j) => j.status === "paid").reduce((sum, j) => sum + (j.amountCents ?? 0), 0);
+}
+
+function booked(jobs: LiveView<Job>): number {
+  return scheduled(jobs).reduce((sum, j) => sum + j.priceCents, 0);
+}
+
+<html lang="en" class="page-board" (
+  tab: "queue" | "completed",
+  jobs: LiveView<Job>,
+  private filter: { value: Filter } = { value: "all" as Filter },
+)>
+  <head>
+    <title>{tab === "queue" ? "Queue" : "Completed"} · Greenline Lawn Care</title>
+    <meta name="description" content="Scheduled and completed jobs.">
+  </head>
+  <body>
+    <AppShell active={tab}>
+      <div class="page-shell is-form stack is-xl">
+        <div class="page-head row">
+          <div>
+            <h1>{tab === "queue" ? "Queue" : "Completed"}</h1>
+            <p class="lede" e:if={tab === "queue"}>Every scheduled job, soonest first.</p>
+            <p class="lede" e:else>Finished work and whether it's been paid.</p>
+          </div>
+        </div>
+
+        <div class="board-stats">
+          <div class="board-stat">
+            <div class="board-stat-label">Booked ahead</div>
+            <div class="board-stat-value">{money(booked(jobs))}</div>
+          </div>
+          <div class="board-stat">
+            <div class="board-stat-label">Awaiting payment</div>
+            <div class="board-stat-value">{money(outstanding(jobs))}</div>
+          </div>
+          <div class="board-stat">
+            <div class="board-stat-label">Collected</div>
+            <div class="board-stat-value">{money(collected(jobs))}</div>
+          </div>
+        </div>
+
+        <div class="tabs board-tabs">
+          <div class="tab-list">
+            <a href="/queue" class={["tab", tab === "queue" && "is-active"]}>
+              Queue <span class="board-count">{scheduled(jobs).length}</span>
+            </a>
+            <a href="/completed" class={["tab", tab === "completed" && "is-active"]}>
+              Completed <span class="board-count">{done(jobs).length}</span>
+            </a>
+          </div>
+
+          <div class="tab-panel stack is-lg" e:if={tab === "queue"}>
+            <section class="board-day stack" e:for={group of byDay(scheduled(jobs))}>
+              <h2 class="section-title">{group.label}</h2>
+              <ul class="job-list">
+                <li e:for={job of group.jobs}>
+                  <JobRow {job} showCustomer={true} />
+                </li>
+              </ul>
+            </section>
+            <div class="job-list job-list-empty" e:if={scheduled(jobs).length === 0}>
+              The queue is clear. New bookings show up here as they come in.
+            </div>
+          </div>
+
+          <div class="tab-panel stack" e:else>
+            <div class="board-filter cluster">
+              <button class={["is-sm", filter.value === "all" ? "is-primary" : "is-ghost"]} onclick={() => filter.value = "all"}>All</button>
+              <button class={["is-sm", filter.value === "unpaid" ? "is-primary" : "is-ghost"]} onclick={() => filter.value = "unpaid"}>Unpaid</button>
+              <button class={["is-sm", filter.value === "paid" ? "is-primary" : "is-ghost"]} onclick={() => filter.value = "paid"}>Paid</button>
+            </div>
+            <ul class="job-list" e:if={filtered(jobs, filter.value).length > 0}>
+              <li e:for={job of filtered(jobs, filter.value)}>
+                <JobRow {job} showCustomer={true} />
+              </li>
+            </ul>
+            <div class="job-list job-list-empty" e:else>Nothing here yet.</div>
+          </div>
+        </div>
+      </div>
+    </AppShell>
+  </body>
+</html>
