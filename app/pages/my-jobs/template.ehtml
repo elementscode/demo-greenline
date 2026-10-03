@@ -1,0 +1,66 @@
+import "./style.css";
+import { LiveView } from "@elements/app";
+import { Job } from "#app/shared/services/jobs";
+import { money } from "#app/shared/format";
+import { AppShell } from "#app/shared/templates/app-shell";
+import { JobRow } from "#app/shared/templates/job-row";
+
+function upcoming(jobs: LiveView<Job>): Job[] {
+  return jobs.filter((j) => j.status === "scheduled").sort((a, b) => +a.scheduledAt - +b.scheduledAt);
+}
+
+function history(jobs: LiveView<Job>): Job[] {
+  return jobs.filter((j) => j.status !== "scheduled").sort((a, b) => +b.scheduledAt - +a.scheduledAt);
+}
+
+function owed(jobs: LiveView<Job>): Job[] {
+  return jobs.filter((j) => j.status === "invoiced");
+}
+
+<html lang="en" class="page-my-jobs" (jobs: LiveView<Job>)>
+  <head>
+    <title>My jobs · Greenline Lawn Care</title>
+    <meta name="description" content="Your lawn care jobs.">
+  </head>
+  <body>
+    <AppShell active="jobs">
+      <div class="page-shell is-form stack is-xl">
+        <div class="page-head row">
+          <div>
+            <h1>My jobs</h1>
+            <p class="lede">Everything we've got on the books for you.</p>
+          </div>
+          <a class="button is-primary" href="/book">Book a job</a>
+        </div>
+
+        <div class="callout is-warning" e:if={owed(jobs).length > 0}>
+          <div class="callout-title">
+            {owed(jobs).length === 1 ? "1 invoice is" : `${owed(jobs).length} invoices are`} waiting for payment
+          </div>
+          Open the job to pay {money(owed(jobs).reduce((sum, j) => sum + (j.amountCents ?? 0), 0))} by card.
+        </div>
+
+        <section class="stack">
+          <h2 class="section-title">Upcoming</h2>
+          <ul class="job-list" e:if={upcoming(jobs).length > 0}>
+            <li e:for={job of upcoming(jobs)}>
+              <JobRow {job} showCustomer={false} />
+            </li>
+          </ul>
+          <div class="job-list job-list-empty" e:else>
+            Nothing scheduled. <a href="/book">Book your next visit</a>.
+          </div>
+        </section>
+
+        <section class="stack" e:if={history(jobs).length > 0}>
+          <h2 class="section-title">Completed</h2>
+          <ul class="job-list">
+            <li e:for={job of history(jobs)}>
+              <JobRow {job} showCustomer={false} />
+            </li>
+          </ul>
+        </section>
+      </div>
+    </AppShell>
+  </body>
+</html>

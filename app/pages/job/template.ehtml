@@ -1,0 +1,280 @@
+import "./style.css";
+import { LiveView, redirect, session } from "@elements/app";
+import { Job } from "#app/shared/services/jobs";
+import { Comment, MAX_COMMENT } from "#app/shared/services/comments";
+import { AppShell } from "#app/shared/templates/app-shell";
+import { money, when, stamp, statusLabel, statusPill, JobStatus } from "#app/shared/format";
+import { markComplete, sendInvoice } from "./services";
+
+interface Step {
+  id: JobStatus;
+  label: string;
+  at: Date | null;
+}
+
+interface Composer {
+  body: string;
+  error: string;
+}
+
+interface Action {
+  confirming: boolean;
+  busy: boolean;
+  error: string;
+}
+
+const ORDER: JobStatus[] = ["scheduled", "completed", "invoiced", "paid"];
+
+function steps(job: Job): Step[] {
+  return [
+    { id: "scheduled", label: "Scheduled", at: job.createdAt },
+    { id: "completed", label: "Work completed", at: job.completedAt },
+    { id: "invoiced", label: "Invoice sent", at: job.invoicedAt },
+    { id: "paid", label: "Paid", at: job.paidAt },
+  ];
+}
+
+function stepClass(job: Job, step: Step): string[] {
+  let reached = ORDER.indexOf(job.status);
+  let index = ORDER.indexOf(step.id);
+
+  return [
+    "job-step",
+    index <= reached && "is-done",
+    index === reached + 1 && job.status !== "paid" && "is-current",
+  ].filter(Boolean) as string[];
+}
+
+function initials(name: string): string {
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
+}
+
+function thread(comments: LiveView<Comment>): Comment[] {
+  return comments.sort((a, b) => +a.createdAt - +b.createdAt);
+}
+
+function onPost(comments: LiveView<Comment>, composer: Composer) {
+  let body = composer.body.trim();
+
+  if (!body) {
+    return;
+  }
+
+  try {
+    composer.error = "";
+    comments.insert(
+      {
+        body,
+        authorId: session.getOrThrow("userId"),
+        authorName: session.getOrThrow("userName"),
+        authorRole: session.getOrThrow("role"),
+        createdAt: new Date(),
+      },
+      () => composer.body = "",
+    );
+  } catch (err: any) {
+    composer.error = err.message;
+  }
+}
+
+function onInvoice(job: Job, action: Action) {
+  action.busy = true;
+  action.error = "";
+
+  try {
+    sendInvoice(job.id);
+  } catch (err: any) {
+    action.error = err.message;
+    action.busy = false;
+  }
+}
+
+function onComplete(job: Job, action: Action) {
+  action.busy = true;
+  action.error = "";
+
+  try {
+    markComplete(job.id);
+  } catch (err: any) {
+    action.error = err.message;
+  }
+
+  action.busy = false;
+  action.confirming = false;
+}
+
+<html lang="en" class="page-job" (
+  jobId: string,
+  jobs: LiveView<Job>,
+  comments: LiveView<Comment>,
+  notice: string,
+  private composer: Composer = { body: "", error: "" },
+  private action: Action = { confirming: false, busy: false, error: "" },
+)>
+  <head>
+    <title>{jobs.get(jobId)?.serviceName ?? "Job"} · Greenline Lawn Care</title>
+    <meta name="description" content="Job details and conversation.">
+  </head>
+  <body>
+    <AppShell active={session.get("role") === "company" ? (jobs.get(jobId)?.status === "scheduled" ? "queue" : "completed") : "jobs"}>
+      <div class="page-shell stack is-lg" e:if={jobs.get(jobId)}>
+        <JobPage job={jobs.get(jobId)!} {comments} {notice} {composer} {action} />
+      </div>
+      <div class="page-shell" e:else>
+        <p>This job is no longer available.</p>
+      </div>
+    </AppShell>
+  </body>
+</html>
+
+<JobPage (job: Job, comments: LiveView<Comment>, notice: string, composer: Composer, action: Action)>
+  <a class="job-back" href={session.get("role") === "company" ? (job.status === "scheduled" ? "/queue" : "/completed") : "/jobs"}>
+    ← Back to {session.get("role") === "company" ? (job.status === "scheduled" ? "queue" : "completed jobs") : "my jobs"}
+  </a>
+
+  <div class="callout is-success" e:if={notice === "paid" && job.status === "paid"}>
+    <div class="callout-title">Payment received</div>
+    Thanks! Your card was charged {money(job.amountCents)}.
+  </div>
+  <div class="callout is-info" e:elseif={notice === "paid"}>
+    <div class="callout-title">Payment processing</div>
+    We're confirming your payment with the card processor. This page updates on its own.
+  </div>
+  <div class="callout" e:elseif={notice === "cancelled" && job.status === "invoiced"}>
+    Payment cancelled. Your card was not charged.
+  </div>
+
+  <div class="job-head stack is-xs">
+    <div class="cluster">
+      <span class={statusPill(job.status)}><span class="pill-dot"></span>{statusLabel(job.status)}</span>
+    </div>
+    <h1>{job.serviceName}</h1>
+    <p class="lede">{when(job.scheduledAt)}</p>
+  </div>
+
+  <div class="job-layout">
+    <div class="stack is-lg">
+      <div class="card">
+        <div class="card-head"><h2>Details</h2></div>
+        <div class="card-body">
+          <dl class="job-facts">
+            <dt>Customer</dt>
+            <dd>{job.customerName} <span class="job-muted">· <a href={`mailto:${job.customerEmail}`}>{job.customerEmail}</a></span></dd>
+
+            <dt>Address</dt>
+            <dd>{job.address || "No address on file"}</dd>
+
+            <dt>Service</dt>
+            <dd>{job.serviceName} <span class="job-muted">· {money(job.priceCents)}</span></dd>
+
+            <dt>Scheduled</dt>
+            <dd>{when(job.scheduledAt)}</dd>
+
+            <dt>Description</dt>
+            <dd class="job-description" e:if={job.description}>{job.description}</dd>
+            <dd class="job-muted" e:else>No description.</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Comments</h2></div>
+        <div class="card-body stack is-lg">
+          <ul class="thread stack is-lg" e:if={comments.length > 0}>
+            <li e:for={c of thread(comments)} class={["thread-item", c.authorRole === "company" && "is-company"]}>
+              <span class="thread-avatar" aria-hidden="true">{initials(c.authorName)}</span>
+              <div>
+                <div class="thread-meta row is-baseline">
+                  <span class="thread-author">{c.authorName}</span>
+                  <span class="pill is-accent" e:if={c.authorRole === "company"}>Greenline</span>
+                  <span class="thread-time">{stamp(c.createdAt)}</span>
+                </div>
+                <p class="thread-body">{c.body}</p>
+              </div>
+            </li>
+          </ul>
+          <p class="thread-empty" e:else>No comments yet. Questions about the job go here.</p>
+
+          <form class="composer stack is-sm" onsubmit={() => onPost(comments, composer)}>
+            <label class="sr-only" for="comment">Add a comment</label>
+            <textarea id="comment" value={composer.body} maxlength={MAX_COMMENT} placeholder="Write a comment..."></textarea>
+            <div class="composer-foot row">
+              <span class="error" e:if={composer.error}>{composer.error}</span>
+              <span class="hint" e:else>
+                {session.get("role") === "company" ? "The customer gets an email." : "Our crew gets an email."}
+              </span>
+              <button type="submit" class="is-primary" disabled={!composer.body.trim()}>Post comment</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <aside class="job-side stack">
+      <div class="card">
+        <div class="card-body stack">
+          <div class="stack is-xs">
+            <span class="job-muted" e:if={job.status === "paid"}>Paid</span>
+            <span class="job-muted" e:elseif={job.status === "invoiced"}>Amount due</span>
+            <span class="job-muted" e:else>Price</span>
+            <span class="job-amount">{money(job.amountCents ?? job.priceCents)}</span>
+          </div>
+
+          <a e:if={session.get("role") === "customer" && job.status === "invoiced"}
+             class="button is-primary is-block"
+             href={`/jobs/${job.id}/pay`}>
+            Pay by card
+          </a>
+
+          <button e:if={session.get("role") === "company" && job.status === "scheduled" && !action.confirming}
+                  class="is-primary is-block"
+                  onclick={() => action.confirming = true}>
+            Mark complete
+          </button>
+
+          <div class="stack is-sm" e:if={session.get("role") === "company" && job.status === "scheduled" && action.confirming}>
+            <p class="hint">Invoice {job.customerName} {money(job.priceCents)} and email a payment link?</p>
+            <div class="row">
+              <button class="is-primary" disabled={action.busy} onclick={() => onComplete(job, action)}>
+                {action.busy ? "Completing..." : "Complete & invoice"}
+              </button>
+              <button class="is-ghost" disabled={action.busy} onclick={() => action.confirming = false}>Cancel</button>
+            </div>
+          </div>
+
+          <p class="hint" e:if={session.get("role") === "company" && job.status === "scheduled" && !action.confirming}>
+            Invoices {job.customerName} {money(job.priceCents)} and emails a payment link.
+          </p>
+          <button e:if={session.get("role") === "company" && job.status === "completed"}
+                  class="is-primary is-block"
+                  disabled={action.busy}
+                  onclick={() => onInvoice(job, action)}>
+            {action.busy ? "Sending invoice..." : `Send ${money(job.priceCents)} invoice`}
+          </button>
+          <p class="hint" e:if={job.status === "completed" && session.get("role") === "customer"}>
+            Work's done. Your invoice is on its way.
+          </p>
+          <p class="hint" e:if={session.get("role") === "company" && job.status === "invoiced"}>
+            Invoice emailed to {job.customerEmail}.
+          </p>
+          <p class="error" e:if={action.error}>{action.error}</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Progress</h2></div>
+        <div class="card-body">
+          <ol class="job-steps">
+            <li e:for={step of steps(job)} class={stepClass(job, step)}>
+              <span class="job-step-dot"></span>
+              <div>
+                <div class="job-step-label">{step.label}</div>
+                <div class="job-step-time" e:if={step.at && ORDER.indexOf(step.id) <= ORDER.indexOf(job.status)}>{stamp(step.at!)}</div>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </aside>
+  </div>
+</JobPage>

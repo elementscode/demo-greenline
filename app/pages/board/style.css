@@ -1,0 +1,67 @@
+@import "#app/shared/styles/page.css";
+
+.board-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.board-stat {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-surface);
+  background: var(--bg);
+}
+
+.board-stat-label {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+.board-stat-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.board-tabs .tab {
+  text-decoration: none;
+}
+
+.board-count {
+  margin-left: var(--space-1-5);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+
+.board-day {
+  gap: var(--space-2);
+}
+
+.board-day-label {
+  gap: var(--space-2);
+}
+
+.board-filter {
+  gap: var(--space-1);
+}
+
+@media (max-width: 40rem) {
+  .board-stats {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .board-stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .board-stat-value {
+    font-size: var(--text-xl);
+  }
+}

@@ -1,0 +1,15 @@
+import "./style.css";
+
+<html lang="en" class="page-errors-unhandled">
+  <body class="error-page center">
+    <main class="error-panel stack">
+      <p class="eyebrow">Error 500</p>
+      <h1>Something went wrong.</h1>
+      <p>We're looking into it. Please try again in a moment.</p>
+      <nav class="cluster error-actions">
+        <a href="javascript:location.reload()" class="button is-primary">Try again</a>
+        <a href="/" class="button is-ghost">Go home</a>
+      </nav>
+    </main>
+  </body>
+</html>
