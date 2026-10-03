@@ -1,0 +1,58 @@
+.auth {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-10) var(--space-4);
+  background:
+    radial-gradient(60rem 30rem at 10% -10%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 70%),
+    radial-gradient(50rem 30rem at 110% 110%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 70%),
+    var(--bg-soft);
+}
+
+.auth-panel {
+  width: 100%;
+  max-width: 26rem;
+}
+
+.auth-brand {
+  gap: var(--space-2);
+  justify-content: center;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-lg);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.auth-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.auth-card h1 {
+  margin: 0;
+  font-size: var(--text-2xl);
+}
+
+.auth-card .hint {
+  margin: 0;
+}
+
+.auth-switch {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+.auth-demo {
+  font-size: var(--text-sm);
+}
+
+.auth-demo code {
+  font-size: var(--text-xs);
+}

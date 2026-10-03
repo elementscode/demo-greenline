@@ -1,0 +1,37 @@
+@import "#app/shared/styles/email.css";
+
+.email.invoice-ready .summary {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.email.invoice-ready .summary td {
+  padding: 10px 0;
+  border-bottom: 1px solid #e6e8e6;
+  font-size: 15px;
+}
+
+.email.invoice-ready .summary td.label {
+  color: #5b635d;
+}
+
+.email.invoice-ready .summary td.value {
+  text-align: right;
+}
+
+.email.invoice-ready .summary tr.total td {
+  font-weight: 600;
+  font-size: 17px;
+  border-bottom: 0;
+}
+
+.email.invoice-ready .pay {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 8px;
+  background: #1f7a45;
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+}

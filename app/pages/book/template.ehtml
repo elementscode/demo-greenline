@@ -1,0 +1,154 @@
+import "./style.css";
+import { redirect } from "@elements/app";
+import config from "#config";
+import { AppShell } from "#app/shared/templates/app-shell";
+import { money, startTimes, timeLabel } from "#app/shared/format";
+import { bookJob, weekday, Service, BookingForm, BookingErrors } from "./services";
+
+interface State {
+  form: BookingForm;
+  errors: BookingErrors;
+  error: string;
+  busy: boolean;
+}
+
+const dateLabel = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", weekday: "long", month: "long", day: "numeric" });
+
+function selected(services: Service[], state: State): Service {
+  return services.find((s) => s.id === state.form.serviceId) ?? services[0];
+}
+
+function isWeekend(date: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(date) && (weekday(date) === 0 || weekday(date) === 6);
+}
+
+function hours(minutes: number): string {
+  return minutes % 60 === 0 ? `${minutes / 60} hr` : `${(minutes / 60).toFixed(1)} hr`;
+}
+
+/** A longer service can push the chosen start past the last one that fits. */
+function fitTime(state: State, service: Service) {
+  if (!startTimes(service.durationMinutes).includes(state.form.time)) {
+    state.form.time = startTimes(service.durationMinutes)[0];
+  }
+}
+
+function onSubmit(state: State) {
+  state.busy = true;
+
+  try {
+    let id = bookJob(state.form);
+    redirect(`/jobs/${id}`);
+  } catch (err: any) {
+    state.errors = err.errors ?? {};
+    state.error = err.errors ? "" : err.message;
+    state.busy = false;
+  }
+}
+
+<html lang="en" class="page-book" (
+  services: Service[],
+  today: string,
+  first: string,
+  serviceId: string,
+  private state: State = {
+    form: { serviceId, date: first, time: "09:00", description: "" },
+    errors: {},
+    error: "",
+    busy: false,
+  },
+)>
+  <head>
+    <title>Book a job · Greenline Lawn Care</title>
+    <meta name="description" content="Book lawn care service.">
+  </head>
+  <body>
+    <AppShell active="book">
+      <div class="page-shell is-form stack is-xl">
+        <div class="page-head row">
+          <div>
+            <h1>Book a job</h1>
+            <p class="lede">We work weekdays, {config.public.openHour}am to {config.public.closeHour - 12}pm.</p>
+          </div>
+        </div>
+
+        <form class="stack is-lg" onsubmit={() => onSubmit(state)}>
+          <p e:if={state.error} class="error" role="alert">{state.error}</p>
+
+          <div class="stack is-sm">
+            <h2 class="section-title">Service</h2>
+            <fieldset class="book-services">
+              <legend class="sr-only">Service</legend>
+              <label e:for={service of services}
+                     class={["book-service", state.form.serviceId === service.id && "is-active"]}>
+                <input type="radio"
+                       name="service"
+                       group={state.form.serviceId}
+                       value={service.id}
+                       onchange={() => fitTime(state, service)}>
+                <span class="book-service-name">{service.name}</span>
+                <span class="book-service-price">{money(service.priceCents)}</span>
+                <span class="book-service-blurb">{service.blurb}</span>
+                <span class="book-service-duration">About {hours(service.durationMinutes)}</span>
+              </label>
+            </fieldset>
+            <p e:if={state.errors.serviceId} class="error">{state.errors.serviceId?.[0]}</p>
+          </div>
+
+          <div class="stack is-sm">
+            <h2 class="section-title">When</h2>
+            <div class="book-when">
+              <div class="field">
+                <label for="date">Date</label>
+                <input id="date"
+                       type="date"
+                       min={today}
+                       value={state.form.date}
+                       class={[(state.errors.date || isWeekend(state.form.date)) && "is-error"]}
+                       required>
+                <p e:if={isWeekend(state.form.date)} class="error">We work weekdays only. Pick Monday through Friday.</p>
+                <p e:elseif={state.errors.date} class="error">{state.errors.date?.[0]}</p>
+              </div>
+
+              <div class="field">
+                <label for="time">Start time</label>
+                <select id="time" value={state.form.time} class={[state.errors.time && "is-error"]}>
+                  <option e:for={t of startTimes(selected(services, state).durationMinutes)} value={t}>{timeLabel(t)}</option>
+                </select>
+                <p e:if={state.errors.time} class="error">{state.errors.time?.[0]}</p>
+                <p e:else class="hint">Latest start that finishes by {config.public.closeHour - 12}pm.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="stack is-sm">
+            <h2 class="section-title">The work</h2>
+            <div class="field">
+              <label for="description">Describe what you need</label>
+              <textarea id="description"
+                        value={state.form.description}
+                        maxlength={2000}
+                        placeholder="Which areas, anything we should watch out for, gate codes, pets..."
+                        class={[state.errors.description && "is-error"]}></textarea>
+              <p e:if={state.errors.description} class="error">{state.errors.description?.[0]}</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body book-summary row">
+              <span class="book-summary-text" e:if={!isWeekend(state.form.date) && state.form.date}>
+                <strong>{selected(services, state).name}</strong>
+                on {dateLabel.format(new Date(`${state.form.date}T00:00:00Z`))} at {timeLabel(state.form.time)}
+                · <strong>{money(selected(services, state).priceCents)}</strong>, billed when the job is done
+              </span>
+              <span class="book-summary-text" e:else>Pick a weekday to see your booking.</span>
+              <button type="submit" class="is-primary" disabled={state.busy || isWeekend(state.form.date)}>
+                {state.busy ? "Booking..." : "Book job"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </AppShell>
+  </body>
+</html>

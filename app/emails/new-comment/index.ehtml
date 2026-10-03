@@ -1,0 +1,30 @@
+import "./style.css";
+
+/**
+ * Sent to the other side of a job's thread when someone posts.
+ *
+ * @email
+ */
+<html (
+  recipientName: string,
+  authorName: string,
+  serviceName: string,
+  when: string,
+  body: string,
+  jobUrl: string,
+)>
+  <body class="email new-comment">
+    <div class="email-wrap">
+      <h1>New comment from {authorName}</h1>
+      <p>Hi {recipientName}, {authorName} commented on the {serviceName.toLowerCase()} job for {when}.</p>
+
+      <div class="quote">{body}</div>
+
+      <p><a href={jobUrl}>View the job and reply</a></p>
+
+      <div class="email-footer">
+        <p>Greenline Lawn Care</p>
+      </div>
+    </div>
+  </body>
+</html>
