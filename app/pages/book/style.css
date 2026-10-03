@@ -1,0 +1,97 @@
+@import "#app/shared/styles/page.css";
+
+.book-services {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.book-service {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  text-align: left;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-surface);
+  background: var(--bg);
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.book-service:hover {
+  border-color: var(--rule-strong, var(--ink-faint));
+}
+
+.book-service.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.book-service input {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
+.book-service-name {
+  padding-right: var(--space-6);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.book-service-price {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-deep);
+}
+
+.book-service-blurb {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+.book-service-duration {
+  margin-top: auto;
+  padding-top: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+}
+
+.book-when {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.book-summary {
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.book-summary-text {
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.book-summary-text strong {
+  color: var(--ink);
+}
+
+@media (max-width: 40rem) {
+  .book-services {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .book-when {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

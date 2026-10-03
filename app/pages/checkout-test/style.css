@@ -1,0 +1,54 @@
+@import "#app/shared/styles/page.css";
+
+.pay-total {
+  justify-content: space-between;
+  font-variant-numeric: tabular-nums;
+}
+
+.pay-total strong {
+  font-size: var(--text-2xl);
+}
+
+.pay-lines {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.pay-lines dt {
+  color: var(--ink-soft);
+}
+
+.pay-lines dd {
+  margin: 0;
+  text-align: right;
+}
+
+.page-checkout-test .page-head {
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.pay-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.pay-note {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+@media (max-width: 480px) {
+  .pay-actions {
+    flex-direction: column-reverse;
+  }
+
+  .pay-actions > * {
+    width: 100%;
+  }
+}

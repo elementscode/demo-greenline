@@ -1,0 +1,45 @@
+import "./style.css";
+import { redirect, session } from "@elements/app";
+import { signout } from "#app/shared/services/auth";
+
+function onSignOut() {
+  signout();
+  redirect("/signin");
+}
+
+<AppShell (active: string)>
+  <div class="app">
+    <header class="app-shell-header">
+      <div class="app-shell-bar row">
+        <a class="app-shell-brand row" href="/">
+          <span class="app-shell-mark">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 20c0-8 5-14 15-15-1 10-7 15-15 15z"/>
+              <path d="M5 20l7-7"/>
+            </svg>
+          </span>
+          Greenline
+        </a>
+
+        <nav class="app-shell-nav cluster" e:if={session.get("role") === "company"}>
+          <a href="/queue" class={[active === "queue" && "is-active"]}>Queue</a>
+          <a href="/completed" class={[active === "completed" && "is-active"]}>Completed</a>
+        </nav>
+
+        <nav class="app-shell-nav cluster" e:elseif={session.get("role") === "customer"}>
+          <a href="/jobs" class={[active === "jobs" && "is-active"]}>My jobs</a>
+          <a href="/book" class={[active === "book" && "is-active"]}>Book a job</a>
+        </nav>
+
+        <div class="app-shell-user row" e:if={session.isLoggedIn()}>
+          <span class="app-shell-who">{session.get("userName")}</span>
+          <button class="is-ghost is-sm" onclick={() => onSignOut()}>Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-main app-shell-main">
+      <slot/>
+    </main>
+  </div>
+</AppShell>

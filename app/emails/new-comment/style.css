@@ -1,0 +1,9 @@
+@import "#app/shared/styles/email.css";
+
+.email.new-comment .quote {
+  margin: 20px 0;
+  padding: 12px 16px;
+  border-left: 3px solid #1f7a45;
+  background: #f4f7f5;
+  white-space: pre-wrap;
+}
