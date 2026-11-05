@@ -4,6 +4,10 @@ import { Job } from "#app/shared/services/jobs";
 import { AppShell } from "#app/shared/templates/app-shell";
 import { JobRow } from "#app/shared/templates/job-row";
 import { day, money } from "#app/shared/format";
+import { Card, CardContent } from "@elements/ui/card";
+import { Empty } from "@elements/ui/empty";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@elements/ui/tabs";
+import { ToggleGroup, ToggleGroupItem } from "@elements/ui/toggle-group";
 
 type Filter = "all" | "unpaid" | "paid";
 
@@ -47,6 +51,13 @@ function byDay(list: Job[]): DayGroup[] {
   return groups;
 }
 
+/** One filter is always on: pressing the active one again keeps it. */
+function keepOne(value: string, details: { cancel(): void }) {
+  if (!value) {
+    details.cancel();
+  }
+}
+
 function outstanding(jobs: LiveView<Job>): number {
   return done(jobs).filter(isUnpaid).reduce((sum, j) => sum + (j.amountCents ?? j.priceCents), 0);
 }
@@ -80,31 +91,37 @@ function booked(jobs: LiveView<Job>): number {
         </div>
 
         <div class="board-stats">
-          <div class="board-stat">
-            <div class="board-stat-label">Booked ahead</div>
-            <div class="board-stat-value">{money(booked(jobs))}</div>
-          </div>
-          <div class="board-stat">
-            <div class="board-stat-label">Awaiting payment</div>
-            <div class="board-stat-value">{money(outstanding(jobs))}</div>
-          </div>
-          <div class="board-stat">
-            <div class="board-stat-label">Collected</div>
-            <div class="board-stat-value">{money(collected(jobs))}</div>
-          </div>
+          <Card size="sm">
+            <CardContent class="board-stat">
+              <div class="board-stat-label">Booked ahead</div>
+              <div class="board-stat-value">{money(booked(jobs))}</div>
+            </CardContent>
+          </Card>
+          <Card size="sm">
+            <CardContent class="board-stat">
+              <div class="board-stat-label">Awaiting payment</div>
+              <div class="board-stat-value">{money(outstanding(jobs))}</div>
+            </CardContent>
+          </Card>
+          <Card size="sm">
+            <CardContent class="board-stat">
+              <div class="board-stat-label">Collected</div>
+              <div class="board-stat-value">{money(collected(jobs))}</div>
+            </CardContent>
+          </Card>
         </div>
 
-        <div class="tabs board-tabs">
-          <div class="tab-list">
-            <a href="/queue" class={["tab", tab === "queue" && "is-active"]}>
+        <Tabs value={tab} activation="manual">
+          <TabsList label="Jobs">
+            <TabsTrigger value="queue" href="/queue">
               Queue <span class="board-count">{scheduled(jobs).length}</span>
-            </a>
-            <a href="/completed" class={["tab", tab === "completed" && "is-active"]}>
+            </TabsTrigger>
+            <TabsTrigger value="completed" href="/completed">
               Completed <span class="board-count">{done(jobs).length}</span>
-            </a>
-          </div>
+            </TabsTrigger>
+          </TabsList>
 
-          <div class="tab-panel stack is-lg" e:if={tab === "queue"}>
+          <TabsContent value="queue" class="stack is-lg">
             <section class="board-day stack" e:for={group of byDay(scheduled(jobs))}>
               <h2 class="section-title">{group.label}</h2>
               <ul class="job-list">
@@ -113,25 +130,25 @@ function booked(jobs: LiveView<Job>): number {
                 </li>
               </ul>
             </section>
-            <div class="job-list job-list-empty" e:if={scheduled(jobs).length === 0}>
-              The queue is clear. New bookings show up here as they come in.
-            </div>
-          </div>
+            <Empty e:if={scheduled(jobs).length === 0}
+                   variant="outline"
+                   description="The queue is clear. New bookings show up here as they come in." />
+          </TabsContent>
 
-          <div class="tab-panel stack" e:else>
-            <div class="board-filter cluster">
-              <button class={["is-sm", filter.value === "all" ? "is-primary" : "is-ghost"]} onclick={() => filter.value = "all"}>All</button>
-              <button class={["is-sm", filter.value === "unpaid" ? "is-primary" : "is-ghost"]} onclick={() => filter.value = "unpaid"}>Unpaid</button>
-              <button class={["is-sm", filter.value === "paid" ? "is-primary" : "is-ghost"]} onclick={() => filter.value = "paid"}>Paid</button>
-            </div>
+          <TabsContent value="completed" class="stack">
+            <ToggleGroup type="single" value={filter.value} size="sm" label="Payment" onValueChange={keepOne}>
+              <ToggleGroupItem value="all">All</ToggleGroupItem>
+              <ToggleGroupItem value="unpaid">Unpaid</ToggleGroupItem>
+              <ToggleGroupItem value="paid">Paid</ToggleGroupItem>
+            </ToggleGroup>
             <ul class="job-list" e:if={filtered(jobs, filter.value).length > 0}>
               <li e:for={job of filtered(jobs, filter.value)}>
                 <JobRow {job} showCustomer={true} />
               </li>
             </ul>
-            <div class="job-list job-list-empty" e:else>Nothing here yet.</div>
-          </div>
-        </div>
+            <Empty e:else variant="outline" description="Nothing here yet." />
+          </TabsContent>
+        </Tabs>
       </div>
     </AppShell>
   </body>
