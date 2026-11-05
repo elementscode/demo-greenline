@@ -17,8 +17,8 @@
 {
   package: {
     dependencies: {
-      "@elements/app": "latest",
-      "@elements/style": "latest",
+      "@elements/app": "local",
+      "@elements/ui": "local",
       "@types/node": "latest",
       "stripe": "^22.6.2",
       "tslib": "latest",
