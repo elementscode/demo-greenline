@@ -70,19 +70,20 @@ export function statusLabel(status: JobStatus): string {
   }
 }
 
-export function statusPill(status: JobStatus): string {
+/** The Badge variant for a status. */
+export function statusVariant(status: JobStatus): "info" | "warning" | "success" {
   switch (status) {
     case "scheduled":
-      return "pill is-info";
+      return "info";
 
     case "completed":
-      return "pill is-warning";
+      return "warning";
 
     case "invoiced":
-      return "pill is-warning";
+      return "warning";
 
     case "paid":
-      return "pill is-success";
+      return "success";
   }
 }
 

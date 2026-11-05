@@ -143,24 +143,11 @@
 
 .thread-item {
   display: grid;
-  grid-template-columns: 2.25rem minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   gap: var(--space-3);
 }
 
-.thread-avatar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: var(--bg-muted);
-  color: var(--ink-soft);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
-}
-
-.thread-item.is-company .thread-avatar {
+.thread-item.is-company .avatar-fallback {
   background: var(--accent);
   color: var(--accent-ink);
 }
@@ -184,15 +171,6 @@
   margin: var(--space-1) 0 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-}
-
-.thread-empty {
-  color: var(--ink-soft);
-  font-size: var(--text-sm);
-}
-
-.composer textarea {
-  min-height: 5rem;
 }
 
 .composer-foot {
