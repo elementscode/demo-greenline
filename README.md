@@ -6,6 +6,8 @@
 
 Customer booking, a crew job queue, comment threads that update live, invoices by email, and card payments.
 
+Greenline uses the `default` theme from @elements/ui.
+
 [Run this app on your machine](https://elements.dev/demos/01a0d596-ae17-7da9-adaa-b3bbfdf1185d). Use this demo as inspiration, or as the starting point for your own app. Your agent creates a new app with this one as the scaffold, and you prompt it to add whatever features you want.
 
 ## Payments
