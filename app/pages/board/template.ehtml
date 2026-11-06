@@ -7,7 +7,7 @@ import { day, money } from "#app/shared/format";
 import { Card, CardContent } from "@elements/ui/card";
 import { Empty } from "@elements/ui/empty";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@elements/ui/tabs";
-import { ToggleGroup, ToggleGroupItem } from "@elements/ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem, type ChangeDetails } from "@elements/ui/toggle-group";
 
 type Filter = "all" | "unpaid" | "paid";
 
@@ -52,7 +52,7 @@ function byDay(list: Job[]): DayGroup[] {
 }
 
 /** One filter is always on: pressing the active one again keeps it. */
-function keepOne(value: string, details: { cancel(): void }) {
+function keepOne(value: string, details: ChangeDetails) {
   if (!value) {
     details.cancel();
   }
