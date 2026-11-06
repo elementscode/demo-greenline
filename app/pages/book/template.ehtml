@@ -4,6 +4,14 @@ import config from "#config";
 import { AppShell } from "#app/shared/templates/app-shell";
 import { money, startTimes, timeLabel } from "#app/shared/format";
 import { bookJob, weekday, Service, BookingForm, BookingErrors } from "./services";
+import { Alert } from "@elements/ui/alert";
+import { Button } from "@elements/ui/button";
+import { Card, CardContent } from "@elements/ui/card";
+import { DatePicker } from "@elements/ui/date-picker";
+import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from "@elements/ui/field";
+import { NativeSelect } from "@elements/ui/native-select";
+import { RadioGroup, RadioGroupItem } from "@elements/ui/radio-group";
+import { Textarea } from "@elements/ui/textarea";
 
 interface State {
   form: BookingForm;
@@ -26,9 +34,17 @@ function hours(minutes: number): string {
   return minutes % 60 === 0 ? `${minutes / 60} hr` : `${(minutes / 60).toFixed(1)} hr`;
 }
 
+function dateError(state: State): string {
+  if (isWeekend(state.form.date)) {
+    return "We work weekdays only. Pick Monday through Friday.";
+  }
+
+  return state.errors.date?.[0] ?? "";
+}
+
 /** A longer service can push the chosen start past the last one that fits. */
-function fitTime(state: State, service: Service) {
-  if (!startTimes(service.durationMinutes).includes(state.form.time)) {
+function fitTime(state: State, service: Service | undefined) {
+  if (service && !startTimes(service.durationMinutes).includes(state.form.time)) {
     state.form.time = startTimes(service.durationMinutes)[0];
   }
 }
@@ -73,80 +89,73 @@ function onSubmit(state: State) {
         </div>
 
         <form class="stack is-lg" onsubmit={() => onSubmit(state)}>
-          <p e:if={state.error} class="error" role="alert">{state.error}</p>
+          <Alert e:if={state.error} variant="danger" description={state.error} />
 
           <div class="stack is-sm">
-            <h2 class="section-title">Service</h2>
-            <fieldset class="book-services">
-              <legend class="sr-only">Service</legend>
-              <label e:for={service of services}
-                     class={["book-service", state.form.serviceId === service.id && "is-active"]}>
-                <input type="radio"
-                       name="service"
-                       group={state.form.serviceId}
-                       value={service.id}
-                       onchange={() => fitTime(state, service)}>
-                <span class="book-service-name">{service.name}</span>
-                <span class="book-service-price">{money(service.priceCents)}</span>
-                <span class="book-service-blurb">{service.blurb}</span>
-                <span class="book-service-duration">About {hours(service.durationMinutes)}</span>
-              </label>
-            </fieldset>
+            <h2 class="section-title" id="service-title">Service</h2>
+            <RadioGroup value={state.form.serviceId}
+                        class="book-services"
+                        attrs={{ "aria-labelledby": "service-title" }}
+                        onValueChange={(id) => fitTime(state, services.find((s) => s.id === id))}>
+              <FieldLabel e:for={service of services}>
+                <Field orientation="horizontal" reserveError={false}>
+                  <FieldContent>
+                    <FieldTitle>{service.name}</FieldTitle>
+                    <span class="book-service-price">{money(service.priceCents)}</span>
+                    <FieldDescription>{service.blurb}</FieldDescription>
+                    <span class="book-service-duration">About {hours(service.durationMinutes)}</span>
+                  </FieldContent>
+                  <RadioGroupItem value={service.id} />
+                </Field>
+              </FieldLabel>
+            </RadioGroup>
             <p e:if={state.errors.serviceId} class="error">{state.errors.serviceId?.[0]}</p>
           </div>
 
           <div class="stack is-sm">
             <h2 class="section-title">When</h2>
             <div class="book-when">
-              <div class="field">
-                <label for="date">Date</label>
-                <input id="date"
-                       type="date"
-                       min={today}
-                       value={state.form.date}
-                       class={[(state.errors.date || isWeekend(state.form.date)) && "is-error"]}
-                       required>
-                <p e:if={isWeekend(state.form.date)} class="error">We work weekdays only. Pick Monday through Friday.</p>
-                <p e:elseif={state.errors.date} class="error">{state.errors.date?.[0]}</p>
-              </div>
+              <Field label="Date" error={dateError(state)}>
+                <DatePicker value={state.form.date}
+                            min={today}
+                            disabledDates={{ dayOfWeek: [0, 6] }}
+                            timeZone={config.public.timeZone}
+                            block
+                            required />
+              </Field>
 
-              <div class="field">
-                <label for="time">Start time</label>
-                <select id="time" value={state.form.time} class={[state.errors.time && "is-error"]}>
+              <Field label="Start time"
+                     description={`Latest start that finishes by ${config.public.closeHour - 12}pm.`}
+                     error={state.errors.time?.[0] ?? ""}>
+                <NativeSelect value={state.form.time} block>
                   <option e:for={t of startTimes(selected(services, state).durationMinutes)} value={t}>{timeLabel(t)}</option>
-                </select>
-                <p e:if={state.errors.time} class="error">{state.errors.time?.[0]}</p>
-                <p e:else class="hint">Latest start that finishes by {config.public.closeHour - 12}pm.</p>
-              </div>
+                </NativeSelect>
+              </Field>
             </div>
           </div>
 
           <div class="stack is-sm">
             <h2 class="section-title">The work</h2>
-            <div class="field">
-              <label for="description">Describe what you need</label>
-              <textarea id="description"
-                        value={state.form.description}
+            <Field label="Describe what you need" error={state.errors.description?.[0] ?? ""}>
+              <Textarea value={state.form.description}
                         maxlength={2000}
-                        placeholder="Which areas, anything we should watch out for, gate codes, pets..."
-                        class={[state.errors.description && "is-error"]}></textarea>
-              <p e:if={state.errors.description} class="error">{state.errors.description?.[0]}</p>
-            </div>
+                        placeholder="Which areas, anything we should watch out for, gate codes, pets..." />
+            </Field>
           </div>
 
-          <div class="card">
-            <div class="card-body book-summary row">
+          <Card>
+            <CardContent class="book-summary row">
               <span class="book-summary-text" e:if={!isWeekend(state.form.date) && state.form.date}>
                 <strong>{selected(services, state).name}</strong>
                 on {dateLabel.format(new Date(`${state.form.date}T00:00:00Z`))} at {timeLabel(state.form.time)}
                 · <strong>{money(selected(services, state).priceCents)}</strong>, billed when the job is done
               </span>
               <span class="book-summary-text" e:else>Pick a weekday to see your booking.</span>
-              <button type="submit" class="is-primary" disabled={state.busy || isWeekend(state.form.date)}>
-                {state.busy ? "Booking..." : "Book job"}
-              </button>
-            </div>
-          </div>
+              <Button type="submit" variant="primary" loading={state.busy} disabled={isWeekend(state.form.date)}>
+                Book job
+              </Button>
+            </CardContent>
+          </Card>
         </form>
       </div>
     </AppShell>
