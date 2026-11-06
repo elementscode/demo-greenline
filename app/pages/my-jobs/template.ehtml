@@ -4,6 +4,9 @@ import { Job } from "#app/shared/services/jobs";
 import { money } from "#app/shared/format";
 import { AppShell } from "#app/shared/templates/app-shell";
 import { JobRow } from "#app/shared/templates/job-row";
+import { Alert } from "@elements/ui/alert";
+import { Button } from "@elements/ui/button";
+import { Empty, EmptyDescription } from "@elements/ui/empty";
 
 function upcoming(jobs: LiveView<Job>): Job[] {
   return jobs.filter((j) => j.status === "scheduled").sort((a, b) => +a.scheduledAt - +b.scheduledAt);
@@ -30,15 +33,14 @@ function owed(jobs: LiveView<Job>): Job[] {
             <h1>My jobs</h1>
             <p class="lede">Everything we've got on the books for you.</p>
           </div>
-          <a class="button is-primary" href="/book">Book a job</a>
+          <Button variant="primary" href="/book">Book a job</Button>
         </div>
 
-        <div class="callout is-warning" e:if={owed(jobs).length > 0}>
-          <div class="callout-title">
-            {owed(jobs).length === 1 ? "1 invoice is" : `${owed(jobs).length} invoices are`} waiting for payment
-          </div>
-          Open the job to pay {money(owed(jobs).reduce((sum, j) => sum + (j.amountCents ?? 0), 0))} by card.
-        </div>
+        <Alert e:if={owed(jobs).length > 0}
+               variant="warning"
+               role="status"
+               title={`${owed(jobs).length === 1 ? "1 invoice is" : `${owed(jobs).length} invoices are`} waiting for payment`}
+               description={`Open the job to pay ${money(owed(jobs).reduce((sum, j) => sum + (j.amountCents ?? 0), 0))} by card.`} />
 
         <section class="stack">
           <h2 class="section-title">Upcoming</h2>
@@ -47,9 +49,9 @@ function owed(jobs: LiveView<Job>): Job[] {
               <JobRow {job} showCustomer={false} />
             </li>
           </ul>
-          <div class="job-list job-list-empty" e:else>
-            Nothing scheduled. <a href="/book">Book your next visit</a>.
-          </div>
+          <Empty e:else variant="outline">
+            <EmptyDescription>Nothing scheduled. <a href="/book">Book your next visit</a>.</EmptyDescription>
+          </Empty>
         </section>
 
         <section class="stack" e:if={history(jobs).length > 0}>

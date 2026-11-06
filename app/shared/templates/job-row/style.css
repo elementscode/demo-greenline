@@ -87,12 +87,6 @@
   color: var(--ink-soft);
 }
 
-.job-list-empty {
-  padding: var(--space-10) var(--space-5);
-  text-align: center;
-  color: var(--ink-soft);
-}
-
 @media (max-width: 40rem) {
   .job-row {
     grid-template-columns: 4.25rem minmax(0, 1fr);
