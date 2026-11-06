@@ -147,9 +147,9 @@
   gap: var(--space-3);
 }
 
-.thread-item.is-company .avatar-fallback {
-  background: var(--accent);
-  color: var(--accent-ink);
+.thread-item.is-company {
+  --avatar-fallback-bg: var(--accent);
+  --avatar-fallback-ink: var(--accent-ink);
 }
 
 .thread-meta {
