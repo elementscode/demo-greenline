@@ -1,6 +1,11 @@
 import "./style.css";
 import { redirect } from "@elements/app";
 import { signin } from "#app/shared/services/auth";
+import { Alert, AlertDescription } from "@elements/ui/alert";
+import { Button } from "@elements/ui/button";
+import { Card, CardContent } from "@elements/ui/card";
+import { Field } from "@elements/ui/field";
+import { Input } from "@elements/ui/input";
 
 interface SigninForm {
   email: string;
@@ -39,50 +44,46 @@ function onSubmit(form: SigninForm, next: string) {
           Greenline Lawn Care
         </a>
 
-        <div class="card auth-card">
-          <div class="card-body">
+        <Card class="auth-card">
+          <CardContent>
             <form class="stack" onsubmit={() => onSubmit(form, next)}>
               <div class="stack is-xs">
                 <h1>Sign in</h1>
                 <p class="hint">Book service, follow your jobs, and pay invoices.</p>
               </div>
 
-              <p e:if={form.error} class="error" role="alert">{form.error}</p>
+              <Alert e:if={form.error} variant="danger" description={form.error} />
 
-              <div class="field">
-                <label for="email">Email</label>
-                <input id="email"
+              <Field label="Email">
+                <Input type="email"
                        name="email"
-                       type="email"
                        value={form.email}
-                       autocomplete="email"
-                       autocapitalize="none"
-                       spellcheck={false}
                        placeholder="you@example.com"
-                       required>
-              </div>
+                       attrs={{ id: "email", autocomplete: "email", autocapitalize: "none", spellcheck: "false" }}
+                       required />
+              </Field>
 
-              <div class="field">
-                <label for="password">Password</label>
-                <input id="password"
+              <Field label="Password">
+                <Input type="password"
                        name="password"
-                       type="password"
                        value={form.password}
-                       autocomplete="current-password"
-                       required>
-              </div>
+                       attrs={{ id: "password", autocomplete: "current-password" }}
+                       required />
+              </Field>
 
-              <button type="submit" class="is-primary is-block">Sign in</button>
+              <Button type="submit" variant="primary" block>Sign in</Button>
             </form>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         <p class="auth-switch">New customer? <a href="/signup">Create an account</a></p>
 
-        <div class="callout auth-demo">
-          Demo accounts, password <code>greenline1</code>: <code>crew@greenline.test</code> (company),
-          <code>maria@example.com</code> and <code>dev@example.com</code> (customers).
-        </div>
+        <Alert variant="info" role="none" class="auth-demo">
+          <AlertDescription>
+            Demo accounts, password <code>greenline1</code>: <code>crew@greenline.test</code> (company),
+            <code>maria@example.com</code> and <code>dev@example.com</code> (customers).
+          </AlertDescription>
+        </Alert>
       </div>
     </main>
   </body>

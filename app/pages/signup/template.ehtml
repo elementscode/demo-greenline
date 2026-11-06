@@ -1,6 +1,11 @@
 import "./style.css";
 import { redirect } from "@elements/app";
 import { signup, SignupForm, MIN_PASSWORD } from "#app/shared/services/auth";
+import { Alert } from "@elements/ui/alert";
+import { Button } from "@elements/ui/button";
+import { Card, CardContent } from "@elements/ui/card";
+import { Field } from "@elements/ui/field";
+import { Input } from "@elements/ui/input";
 
 type Errors = Partial<Record<keyof SignupForm, string[]>>;
 
@@ -46,72 +51,54 @@ function onSubmit(state: State) {
           Greenline Lawn Care
         </a>
 
-        <div class="card auth-card">
-          <div class="card-body">
+        <Card class="auth-card">
+          <CardContent>
             <form class="stack" onsubmit={() => onSubmit(state)}>
               <div class="stack is-xs">
                 <h1>Create an account</h1>
                 <p class="hint">Book mowing, leaf cleanup and hedge trimming online.</p>
               </div>
 
-              <p e:if={state.error} class="error" role="alert">{state.error}</p>
+              <Alert e:if={state.error} variant="danger" description={state.error} />
 
-              <div class="field">
-                <label for="name">Full name</label>
-                <input id="name"
-                       name="name"
+              <Field label="Full name" error={state.errors.name?.[0] ?? ""}>
+                <Input name="name"
                        value={state.form.name}
-                       autocomplete="name"
-                       class={[state.errors.name && "is-error"]}
-                       required>
-                <p e:if={state.errors.name} class="error">{state.errors.name?.[0]}</p>
-              </div>
+                       attrs={{ id: "name", autocomplete: "name" }}
+                       required />
+              </Field>
 
-              <div class="field">
-                <label for="email">Email</label>
-                <input id="email"
+              <Field label="Email" error={state.errors.email?.[0] ?? ""}>
+                <Input type="email"
                        name="email"
-                       type="email"
                        value={state.form.email}
-                       autocomplete="email"
-                       autocapitalize="none"
-                       spellcheck={false}
                        placeholder="you@example.com"
-                       class={[state.errors.email && "is-error"]}
-                       required>
-                <p e:if={state.errors.email} class="error">{state.errors.email?.[0]}</p>
-              </div>
+                       attrs={{ id: "email", autocomplete: "email", autocapitalize: "none", spellcheck: "false" }}
+                       required />
+              </Field>
 
-              <div class="field">
-                <label for="address">Service address</label>
-                <input id="address"
-                       name="address"
+              <Field label="Service address" error={state.errors.address?.[0] ?? ""}>
+                <Input name="address"
                        value={state.form.address}
-                       autocomplete="street-address"
                        placeholder="123 Main Street, Springfield"
-                       class={[state.errors.address && "is-error"]}
-                       required>
-                <p e:if={state.errors.address} class="error">{state.errors.address?.[0]}</p>
-              </div>
+                       attrs={{ id: "address", autocomplete: "street-address" }}
+                       required />
+              </Field>
 
-              <div class="field">
-                <label for="password">Password</label>
-                <input id="password"
+              <Field label="Password"
+                     description={`At least ${MIN_PASSWORD} characters.`}
+                     error={state.errors.password?.[0] ?? ""}>
+                <Input type="password"
                        name="password"
-                       type="password"
                        value={state.form.password}
-                       autocomplete="new-password"
-                       minlength={MIN_PASSWORD}
-                       class={[state.errors.password && "is-error"]}
-                       required>
-                <p e:if={state.errors.password} class="error">{state.errors.password?.[0]}</p>
-                <p e:else class="hint">At least {MIN_PASSWORD} characters.</p>
-              </div>
+                       attrs={{ id: "password", autocomplete: "new-password", minlength: MIN_PASSWORD }}
+                       required />
+              </Field>
 
-              <button type="submit" class="is-primary is-block">Create account</button>
+              <Button type="submit" variant="primary" block>Create account</Button>
             </form>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         <p class="auth-switch">Already have an account? <a href="/signin">Sign in</a></p>
       </div>
