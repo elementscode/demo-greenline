@@ -14,7 +14,7 @@
     --accent: var(--brand-600);
     --accent-deep: var(--brand-700);
     --accent-soft: var(--brand-50);
-    --accent-ink: #ffffff;
+    --accent-ink: var(--white);
     --accent-edge: var(--brand-200);
     --link-c: 0.123;
     --link-h: 150;
