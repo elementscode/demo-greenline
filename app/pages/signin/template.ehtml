@@ -78,7 +78,7 @@ function onSubmit(form: SigninForm, next: string) {
 
         <p class="auth-switch">New customer? <a href="/signup">Create an account</a></p>
 
-        <Alert variant="info" role="none" class="auth-demo">
+        <Alert role="none" class="auth-demo">
           <AlertDescription>
             Demo accounts, password <code>greenline1</code>: <code>crew@greenline.test</code> (company),
             <code>maria@example.com</code> and <code>dev@example.com</code> (customers).
