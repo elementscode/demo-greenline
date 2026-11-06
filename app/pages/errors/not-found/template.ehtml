@@ -1,4 +1,5 @@
 import "./style.css";
+import { Button } from "@elements/ui/button";
 
 <html lang="en" class="page-errors-not-found">
   <body class="error-page center">
@@ -7,8 +8,8 @@ import "./style.css";
       <h1>Page not found.</h1>
       <p>The page you're looking for doesn't exist or has moved.</p>
       <nav class="cluster error-actions">
-        <a href="/" class="button is-primary">Go home</a>
-        <a href="javascript:history.back()" class="button is-ghost">Go back</a>
+        <Button variant="primary" href="/">Go home</Button>
+        <Button variant="ghost" href="javascript:history.back()">Go back</Button>
       </nav>
     </main>
   </body>

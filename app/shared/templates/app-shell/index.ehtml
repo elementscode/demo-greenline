@@ -1,6 +1,7 @@
 import "./style.css";
 import { redirect, session } from "@elements/app";
 import { signout } from "#app/shared/services/auth";
+import { Button } from "@elements/ui/button";
 
 function onSignOut() {
   signout();
@@ -33,7 +34,7 @@ function onSignOut() {
 
         <div class="app-shell-user row" e:if={session.isLoggedIn()}>
           <span class="app-shell-who">{session.get("userName")}</span>
-          <button class="is-ghost is-sm" onclick={() => onSignOut()}>Sign out</button>
+          <Button variant="ghost" size="sm" onclick={() => onSignOut()}>Sign out</Button>
         </div>
       </div>
     </header>

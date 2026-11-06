@@ -1,4 +1,5 @@
 import "./style.css";
+import { Button } from "@elements/ui/button";
 
 <html lang="en" class="page-errors-unhandled">
   <body class="error-page center">
@@ -7,8 +8,8 @@ import "./style.css";
       <h1>Something went wrong.</h1>
       <p>We're looking into it. Please try again in a moment.</p>
       <nav class="cluster error-actions">
-        <a href="javascript:location.reload()" class="button is-primary">Try again</a>
-        <a href="/" class="button is-ghost">Go home</a>
+        <Button variant="primary" href="javascript:location.reload()">Try again</Button>
+        <Button variant="ghost" href="/">Go home</Button>
       </nav>
     </main>
   </body>
