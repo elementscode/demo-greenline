@@ -153,16 +153,19 @@
 }
 
 .thread-meta {
-  gap: var(--space-2);
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
   font-size: var(--text-sm);
 }
 
 .thread-author {
+  white-space: nowrap;
   font-weight: var(--weight-semibold);
   color: var(--ink);
 }
 
 .thread-time {
+  white-space: nowrap;
   color: var(--ink-soft);
   font-size: var(--text-xs);
 }
